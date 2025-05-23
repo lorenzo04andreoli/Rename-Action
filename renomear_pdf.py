@@ -1,6 +1,9 @@
 import os
 import re
 import fitz 
+from datetime import datetime
+
+data=datetime.today().strftime('%m.%Y')
 
 PASTA_PDFS = 'pdfs'
 PASTA_RENOMEADOS = 'renomeados'
@@ -62,7 +65,7 @@ def renomear_pdfs():
             
             if nome:
                 nome_limpo = limpar_nome(nome)
-                novo_nome = f'Comparecimento de {nome_limpo} mês.ano'
+                novo_nome = f'Comparecimento de {nome_limpo} {data}.pdf'
                 caminho_novo = os.path.join(PASTA_RENOMEADOS, novo_nome)
                 
                 os.rename(caminho_pdf, caminho_novo)

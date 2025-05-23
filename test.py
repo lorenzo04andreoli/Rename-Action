@@ -1,6 +1,7 @@
 import fitz
 
-arquivo = r""
+# Altere o caminho abaixo para o PDF que deseja testar
+arquivo = r"pdfs\Seu-arquivo.pdf"
 
 with fitz.open(arquivo) as doc:
     for i in range(len(doc)):
