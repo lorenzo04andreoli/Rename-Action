@@ -59,7 +59,7 @@ python renomear.py
 3. Os arquivos com nome extraído serão movidos para a pasta `renomeados/` com nomes como:
 
 ```
-Comparecimento de Maria da Silva.pdf
+Comparecimento de Maria da Silva 05.2025.pdf
 ```
 
 ---
