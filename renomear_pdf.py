@@ -1,0 +1,74 @@
+import os
+import re
+import fitz 
+
+PASTA_PDFS = 'pdfs'
+PASTA_RENOMEADOS = 'renomeados'
+
+os.makedirs(PASTA_RENOMEADOS, exist_ok=True)
+
+def limpar_nome(nome):
+    nome = nome.replace('\n', ' ').replace('\r', ' ')
+    nome = re.sub(r'\s+', ' ', nome).strip()
+    nome = re.sub(r'[<>:"/\\|?*]', '', nome)
+    return nome
+
+def extrair_nome(texto):
+    """
+    Extrai o nome próximo de 'RG:' (até 2 linhas acima e 1 abaixo), corrigindo erros comuns de OCR.
+    """
+    linhas = texto.splitlines()
+    for i, linha in enumerate(linhas):
+        if 'RG:' in linha.upper():
+            candidatos = []
+
+            if i + 1 < len(linhas):
+                candidatos.append(linhas[i + 1].strip())
+            if i - 1 >= 0:
+                candidatos.append(linhas[i - 1].strip())
+            if i - 2 >= 0:
+                candidatos.append(linhas[i - 2].strip())
+
+            for nome in candidatos:
+                # Remove prefixos inválidos (números, letras soltas, símbolos)
+                nome = re.sub(r'^[^A-Za-zÁÉÍÓÚÂÊÔÃÕÇáéíóúâêôãõç]+', '', nome)
+                nome = re.sub(r'^[a-zA-Z]\s+', '', nome)  # remove "f ", "r ", etc.
+
+                # Confirma que é um nome: pelo menos 2 palavras com letras
+                palavras = nome.split()
+                if len(palavras) >= 2 and all(len(p) > 1 for p in palavras):
+                    nome = re.sub(r'\s+', ' ', nome).strip()
+                    return nome.title()
+
+    return None
+
+
+
+def processar_pdf_sem_ocr(caminho_pdf):
+    texto_completo = ''
+    with fitz.open(caminho_pdf) as pdf:
+        for pagina in pdf:
+            texto_completo += pagina.get_text()
+    return texto_completo
+
+def renomear_pdfs():
+    for arquivo in os.listdir(PASTA_PDFS):
+        if arquivo.lower().endswith('.pdf'):
+            caminho_pdf = os.path.join(PASTA_PDFS, arquivo)
+            print(f'Processando: {arquivo}')
+            
+            texto = processar_pdf_sem_ocr(caminho_pdf)
+            nome = extrair_nome(texto)
+            
+            if nome:
+                nome_limpo = limpar_nome(nome)
+                novo_nome = f'Comparecimento de {nome_limpo} mês.ano'
+                caminho_novo = os.path.join(PASTA_RENOMEADOS, novo_nome)
+                
+                os.rename(caminho_pdf, caminho_novo)
+                print(f'✔️ Renomeado para: {novo_nome}')
+            else:
+                print(f'❗ Nome não encontrado em: {arquivo}')
+
+if __name__ == '__main__':
+    renomear_pdfs()
