@@ -47,7 +47,7 @@ def extrair_nome(texto):
 
 
 
-def processar_pdf_sem_ocr(caminho_pdf):
+def extrair_texto_pdf(caminho_pdf):
     texto_completo = ''
     with fitz.open(caminho_pdf) as pdf:
         for pagina in pdf:
@@ -60,13 +60,14 @@ def renomear_pdfs():
             caminho_pdf = os.path.join(PASTA_PDFS, arquivo)
             print(f'Processando: {arquivo}')
             
-            texto = processar_pdf_sem_ocr(caminho_pdf)
+            texto = extrair_texto_pdf(caminho_pdf)
             nome = extrair_nome(texto)
             
             if nome:
                 nome_limpo = limpar_nome(nome)
-                novo_nome = f'Comparecimento de {nome_limpo} {data}.pdf'
+                novo_nome = f'Comparecimento de {nome_limpo} {data} {contador}.pdf'
                 caminho_novo = os.path.join(PASTA_RENOMEADOS, novo_nome)
+                contador +=1
                 
                 os.rename(caminho_pdf, caminho_novo)
                 print(f'✔️ Renomeado para: {novo_nome}')

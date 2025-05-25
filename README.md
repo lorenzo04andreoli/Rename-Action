@@ -1,6 +1,6 @@
-# 📄 Renomeador Automático de PDFs por Nome (OCR Inteligente)
+# 📄 Renomeador Automático de PDFs por Nome
 
-Este projeto automatiza o processo de **renomear arquivos PDF escaneados** com base no nome da pessoa que consta no documento, como por exemplo:
+Este projeto automatiza o processo de renomear arquivos PDF escaneados com texto selecionável, baseado no nome da pessoa que consta no documento, como por exemplo:
 
 ```
 Comparecimento de João da Silva.pdf
