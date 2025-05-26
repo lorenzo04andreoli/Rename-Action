@@ -65,8 +65,15 @@ def renomear_pdfs():
             
             if nome:
                 nome_limpo = limpar_nome(nome)
-                novo_nome = f'Comparecimento de {nome_limpo} {data}.pdf'
+                novo_nome_base = f'Comparecimento de {nome_limpo} {data}'
+                novo_nome = f'{novo_nome_base}.pdf'
                 caminho_novo = os.path.join(PASTA_RENOMEADOS, novo_nome)
+
+                contador = 1
+                while os.path.exists(caminho_novo):
+                    novo_nome = f'{novo_nome_base} ({contador}).pdf'
+                    caminho_novo = os.path.join(PASTA_RENOMEADOS, novo_nome)
+                    contador += 1
                 
                 os.rename(caminho_pdf, caminho_novo)
                 print(f'✔️ Renomeado para: {novo_nome}')
